@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "986022186416",
+    "project_id": "socialgram-f1af6",
+    "storage_bucket": "socialgram-f1af6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986022186416:android:47f68910cee59bf8601a75",
+        "android_client_info": {
+          "package_name": "com.example.socialgram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986022186416-kcucan8tshq78reo9p4lbb729t8hjphe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLCFWuHoKsA2ppw9TaTVdc8i4kk3vKFsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986022186416-kcucan8tshq78reo9p4lbb729t8hjphe.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "986022186416-jp9gb7n4bs6nul7dlhcus772s294iniv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.socialgram"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
