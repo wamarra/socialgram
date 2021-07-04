@@ -7,7 +7,7 @@ import 'package:socialgram/app/modules/register/register_store.dart';
 
 class RegisterPage extends StatefulWidget {
   final String title;
-  const RegisterPage({Key? key, this.title = 'RegisterPage'}) : super(key: key);
+  const RegisterPage({Key? key, this.title = 'Socialgram'}) : super(key: key);
   @override
   RegisterPageState createState() => RegisterPageState();
 }
