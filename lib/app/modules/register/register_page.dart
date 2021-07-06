@@ -15,8 +15,11 @@ class RegisterPage extends StatefulWidget {
 class RegisterPageState extends ModularState<RegisterPage, RegisterStore> {
   late PageController _pageController;
   late final TextEditingController _nameController;
+  late final FocusNode _nameFocusNode;
   late final TextEditingController _emailController;
+  late final FocusNode _emailFocusNode;
   late final TextEditingController _passwordController;
+  late final FocusNode _passwordFocusNode;
   late final ReactionDisposer _disposer;
 
   @override
@@ -24,8 +27,11 @@ class RegisterPageState extends ModularState<RegisterPage, RegisterStore> {
     super.initState();
     _pageController = PageController(initialPage: 0);
     _nameController = new TextEditingController();
+    _nameFocusNode = new FocusNode();
     _emailController = new TextEditingController();
+    _emailFocusNode = new FocusNode();
     _passwordController = new TextEditingController();
+    _passwordFocusNode = new FocusNode();
 
     _disposer = when((_) => store.user != null,
         () => Modular.to.pushReplacementNamed(Constants.Routes.HOME));
@@ -54,6 +60,7 @@ class RegisterPageState extends ModularState<RegisterPage, RegisterStore> {
           _pageController.previousPage(
               duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
         },
+        focusNode: _nameFocusNode,
       ),
       _FormField(
         controller: _emailController,
@@ -67,6 +74,7 @@ class RegisterPageState extends ModularState<RegisterPage, RegisterStore> {
           _pageController.previousPage(
               duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
         },
+        focusNode: _emailFocusNode,
       ),
       _FormField(
         controller: _passwordController,
@@ -82,6 +90,7 @@ class RegisterPageState extends ModularState<RegisterPage, RegisterStore> {
           _pageController.previousPage(
               duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
         },
+        focusNode: _passwordFocusNode,
       ),
     ],
   );
@@ -91,7 +100,18 @@ class RegisterPageState extends ModularState<RegisterPage, RegisterStore> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        elevation: 0,
+        actions: [
+          TextButton(
+            child: Text('Já tem cadastro?',
+                style: TextStyle(color: Theme.of(context).buttonColor)),
+            onPressed: () {
+              Modular.to.pushReplacementNamed(Constants.Routes.LOGIN);
+            },
+          )
+        ],
       ),
+      backgroundColor: Theme.of(context).primaryColor,
       body: Observer(builder: (_) {
         if (store.loading) {
           return Column(
@@ -113,13 +133,15 @@ class _FormField extends StatelessWidget {
   final String label;
   final VoidCallback onNext;
   final VoidCallback onBack;
+  final FocusNode focusNode;
 
   const _FormField(
       {required this.controller,
       this.showBackButton = true,
       required this.label,
       required this.onNext,
-      required this.onBack});
+      required this.onBack,
+      required this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +153,7 @@ class _FormField extends StatelessWidget {
             ? IconButton(
                 icon: Icon(Icons.arrow_upward),
                 onPressed: onBack,
+                color: Theme.of(context).primaryColorLight,
               )
             : SizedBox.fromSize(
                 size: Size.zero,
@@ -146,20 +169,24 @@ class _FormField extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                   child: Text(label,
                       style: Theme.of(context)
-                          .textTheme
-                          .headline1!
+                          .primaryTextTheme
+                          .headline6!
                           .copyWith(fontSize: 60),
                       maxLines: 1),
                 ),
                 TextFormField(
                   controller: controller,
                   onEditingComplete: onNext,
+                  focusNode: focusNode,
                   autofocus: true,
                   decoration: InputDecoration(
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
                   ),
-                  style: TextStyle(fontSize: 32),
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .headline1!
+                      .copyWith(fontSize: 28),
                 )
               ],
             ),

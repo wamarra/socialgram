@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
 
-part 'home_store.g.dart';
+part 'feed_store.g.dart';
 
-class HomeStore = HomeStoreBase with _$HomeStore;
+class FeedStore = _FeedStoreBase with _$FeedStore;
 
-abstract class HomeStoreBase with Store {
+abstract class _FeedStoreBase with Store {
   FirebaseAuth _firebaseAuth;
-  HomeStoreBase(this._firebaseAuth) {
+
+  _FeedStoreBase(this._firebaseAuth) {
     _firebaseAuth.authStateChanges().listen(_onAuthChange);
   }
 

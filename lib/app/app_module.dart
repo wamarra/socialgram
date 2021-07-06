@@ -11,8 +11,8 @@ import 'modules/register/register_module.dart';
 import 'modules/login/login_module.dart';
 
 class AppModule extends Module {
-  SharedPreferences _sharedPreferences;
-  FirebaseApp _firebaseApp;
+  final SharedPreferences _sharedPreferences;
+  final FirebaseApp _firebaseApp;
 
   AppModule(this._sharedPreferences, this._firebaseApp);
   @override

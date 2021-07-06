@@ -45,7 +45,7 @@ class LoginPageState extends ModularState<LoginPage, LoginStore> {
             child: Text('Não tem cadastro?',
                 style: TextStyle(color: Theme.of(context).buttonColor)),
             onPressed: () {
-              Modular.to.pushNamed(Constants.Routes.REGISTER);
+              Modular.to.pushReplacementNamed(Constants.Routes.REGISTER);
             },
           )
         ],
@@ -88,15 +88,48 @@ class LoginPageState extends ModularState<LoginPage, LoginStore> {
                 },
               ),
               onPressed: () {
-                store.loginWith(
-                    email: _emailController.text,
-                    password: _passwordController.text);
+                store
+                    .loginWith(
+                        email: _emailController.text,
+                        password: _passwordController.text)
+                    .then((_) {
+                  if (store.loginError != '') {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text(
+                            'Erro no Login',
+                            style:
+                                TextStyle(color: Theme.of(context).errorColor),
+                          ),
+                          content: Text(store.loginError),
+                          actions: [
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context)
+                                          .buttonTheme
+                                          .colorScheme!
+                                          .error)),
+                              child: Text('OK'),
+                              onPressed: () {
+                                Modular.to.pop();
+                              },
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
+                });
               },
             ),
             TextButton(
               child: Text('Esqueceu a senha?'),
               onPressed: () {
-                Modular.to.pushNamed(Constants.Routes.FORGOT_PASSWORD);
+                Modular.to.pushNamed(
+                    Constants.Routes.LOGIN + Constants.Routes.FORGOT_PASSWORD);
               },
             ),
           ],

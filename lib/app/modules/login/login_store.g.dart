@@ -39,6 +39,21 @@ mixin _$LoginStore on _LoginStoreBase, Store {
     });
   }
 
+  final _$loginErrorAtom = Atom(name: '_LoginStoreBase.loginError');
+
+  @override
+  String get loginError {
+    _$loginErrorAtom.reportRead();
+    return super.loginError;
+  }
+
+  @override
+  set loginError(String value) {
+    _$loginErrorAtom.reportWrite(value, super.loginError, () {
+      super.loginError = value;
+    });
+  }
+
   final _$loginWithAsyncAction = AsyncAction('_LoginStoreBase.loginWith');
 
   @override
@@ -74,7 +89,8 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   String toString() {
     return '''
 user: ${user},
-loading: ${loading}
+loading: ${loading},
+loginError: ${loginError}
     ''';
   }
 }

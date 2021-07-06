@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
+import 'package:socialgram/app/exception/auth_exception_handle.dart';
 
 part 'login_store.g.dart';
 
@@ -17,6 +20,9 @@ abstract class _LoginStoreBase with Store {
   @observable
   bool loading = false;
 
+  @observable
+  String loginError = '';
+
   @action
   void _onAuthChange(User? user) {
     this.user = user;
@@ -30,8 +36,12 @@ abstract class _LoginStoreBase with Store {
     }
 
     loading = true;
-    await _firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: password);
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      loginError = AuthExceptionHandler.handleException(e);
+    }
     loading = false;
   }
 
