@@ -1,6 +1,8 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:socialgram/app/constants.dart';
 import 'package:socialgram/app/modules/feed/feed_store.dart';
 
 class FeedPage extends StatefulWidget {
@@ -31,17 +33,92 @@ class FeedPageState extends ModularState<FeedPage, FeedStore> {
           ),
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              store.logoff();
-              Modular.to.pushReplacementNamed(Constants.Routes.LOGIN);
-            },
-            child: Text('LOGOFF'),
-          ),
-        ],
+      body: StreamBuilder(
+        stream: store.posts,
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            log('Erro ao carregar: ${snapshot.error}');
+            return Text('Deu erro');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasData && snapshot.data!.docs.length > 0) {
+            final posts = snapshot.data!.docs;
+            return ListView.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  final post = posts[index].data() as Map<String, dynamic>;
+                  return Column(
+                    children: [
+                      FutureBuilder(
+                        future: store.getUser(post['userId']),
+                        builder: (context,
+                            AsyncSnapshot<DocumentSnapshot> snapshot) {
+                          if (snapshot.hasData) {
+                            final user =
+                                snapshot.data!.data() as Map<String, dynamic>;
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: _getAvatar(user),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(user['displayName'])
+                                ],
+                              ),
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
+                      SizedBox(height: 8),
+                      Image.network(post['url'],
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.favorite_border_rounded),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.chat_bubble_outline_rounded),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.share_outlined),
+                            onPressed: () {},
+                          ),
+                          Spacer(),
+                          IconButton(
+                            icon: Icon(Icons.bookmark_border_rounded),
+                            onPressed: () {},
+                          ),
+                        ],
+                      )
+                    ],
+                  );
+                });
+          }
+          return Container();
+        },
       ),
     );
+  }
+
+  ImageProvider _getAvatar(Map<String, dynamic> user) {
+    if (user['profilePicture'] != null) {
+      return NetworkImage(user['profilePicture']);
+    }
+    return AssetImage('assets/avatar.png');
   }
 }

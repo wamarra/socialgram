@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
 import 'package:socialgram/app/exception/auth_exception_handle.dart';
@@ -40,6 +38,7 @@ abstract class _LoginStoreBase with Store {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
     } on FirebaseAuthException catch (e) {
+      print(e.toString());
       loginError = AuthExceptionHandler.handleException(e);
     }
     loading = false;
