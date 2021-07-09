@@ -71,6 +71,15 @@ mixin _$LoginStore on _LoginStoreBase, Store {
         .run(() => super.resetPassword(withEmail: withEmail));
   }
 
+  final _$saveUserNameSharedPreferenceAsyncAction =
+      AsyncAction('_LoginStoreBase.saveUserNameSharedPreference');
+
+  @override
+  Future<bool> saveUserNameSharedPreference(String userName) {
+    return _$saveUserNameSharedPreferenceAsyncAction
+        .run(() => super.saveUserNameSharedPreference(userName));
+  }
+
   final _$_LoginStoreBaseActionController =
       ActionController(name: '_LoginStoreBase');
 

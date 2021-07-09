@@ -41,6 +41,7 @@ abstract class _RegisterStoreBase with Store {
     firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     await credential.user?.updateDisplayName(name);
     sharedPreferences.setBool(Constants.SPK_REGISTER_DONE, true);
+    sharedPreferences.setString(Constants.USERNAMEKEY, name);
     loading = false;
   }
 }

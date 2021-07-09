@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socialgram/app/constants.dart';
 
 part 'user_store.g.dart';
 
@@ -14,10 +16,12 @@ abstract class _UserStoreBase with Store {
   FirebaseAuth firebaseAuth;
   FirebaseFirestore firebaseFirestore;
   FirebaseStorage firebaseStorage;
+  SharedPreferences sharedPreferences;
   _UserStoreBase(
       {required this.firebaseAuth,
       required this.firebaseFirestore,
-      required this.firebaseStorage}) {
+      required this.firebaseStorage,
+      required this.sharedPreferences}) {
     firebaseAuth.userChanges().listen(_onUserChange);
   }
 
@@ -74,6 +78,7 @@ abstract class _UserStoreBase with Store {
           .set({'displayName': displayName, 'bio': bio});
 
       await firebaseAuth.currentUser!.updateDisplayName(displayName);
+      saveUserNameSharedPreference(displayName);
       loading = false;
     } on FirebaseException catch (e) {
       error = e;
@@ -116,6 +121,11 @@ abstract class _UserStoreBase with Store {
         .add({'userId': user!.uid, 'dateTime': DateTime.now(), 'url': url});
 
     loading = false;
+  }
+
+  @action
+  Future<bool> saveUserNameSharedPreference(String userName) async {
+    return await sharedPreferences.setString(Constants.USERNAMEKEY, userName);
   }
 
   @action

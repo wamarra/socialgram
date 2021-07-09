@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socialgram/app/modules/login/login_store.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:socialgram/app/constants.dart';
@@ -8,7 +9,9 @@ import 'package:socialgram/app/modules/login/login_page.dart';
 class LoginModule extends Module {
   @override
   final List<Bind> binds = [
-    Bind.lazySingleton((i) => LoginStore(i.get<FirebaseAuth>())),
+    Bind.lazySingleton((i) => LoginStore(
+        firebaseAuth: i.get<FirebaseAuth>(),
+        sharedPreferences: i.get<SharedPreferences>())),
   ];
 
   @override

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socialgram/app/constants.dart';
 import 'package:socialgram/app/exception/auth_exception_handle.dart';
 
 part 'login_store.g.dart';
@@ -7,13 +9,15 @@ part 'login_store.g.dart';
 class LoginStore = _LoginStoreBase with _$LoginStore;
 
 abstract class _LoginStoreBase with Store {
-  FirebaseAuth _firebaseAuth;
-  _LoginStoreBase(this._firebaseAuth) {
-    _firebaseAuth.authStateChanges().listen(_onAuthChange);
+  FirebaseAuth firebaseAuth;
+  SharedPreferences sharedPreferences;
+  _LoginStoreBase(
+      {required this.firebaseAuth, required this.sharedPreferences}) {
+    firebaseAuth.authStateChanges().listen(_onAuthChange);
   }
 
   @observable
-  late User? user = _firebaseAuth.currentUser;
+  late User? user = firebaseAuth.currentUser;
 
   @observable
   bool loading = false;
@@ -35,8 +39,9 @@ abstract class _LoginStoreBase with Store {
 
     loading = true;
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      saveUserNameSharedPreference(user!.displayName!);
     } on FirebaseAuthException catch (e) {
       print(e.toString());
       loginError = AuthExceptionHandler.handleException(e);
@@ -47,7 +52,12 @@ abstract class _LoginStoreBase with Store {
   @action
   Future<void> resetPassword({required String withEmail}) async {
     loading = true;
-    await _firebaseAuth.sendPasswordResetEmail(email: withEmail);
+    await firebaseAuth.sendPasswordResetEmail(email: withEmail);
     loading = false;
+  }
+
+  @action
+  Future<bool> saveUserNameSharedPreference(String userName) async {
+    return await sharedPreferences.setString(Constants.USERNAMEKEY, userName);
   }
 }

@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
         Modular.to.navigate(Constants.Routes.HOME + Constants.Routes.FEED);
         break;
       case 1:
-        Modular.to.navigate(Constants.Routes.HOME + Constants.Routes.SEARCH);
+        Modular.to.navigate(Constants.Routes.HOME + Constants.Routes.ROOM);
         break;
       case 2:
         Modular.to.navigate(Constants.Routes.HOME + Constants.Routes.PROFILE);
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         onTap: _onTabChange,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outline), label: 'Perfil'),
         ],

@@ -103,6 +103,15 @@ mixin _$UserStore on _UserStoreBase, Store {
     return _$postPictureAsyncAction.run(() => super.postPicture(filePath));
   }
 
+  final _$saveUserNameSharedPreferenceAsyncAction =
+      AsyncAction('_UserStoreBase.saveUserNameSharedPreference');
+
+  @override
+  Future<bool> saveUserNameSharedPreference(String userName) {
+    return _$saveUserNameSharedPreferenceAsyncAction
+        .run(() => super.saveUserNameSharedPreference(userName));
+  }
+
   final _$logoffAsyncAction = AsyncAction('_UserStoreBase.logoff');
 
   @override
