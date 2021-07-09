@@ -49,7 +49,6 @@ class SearchPageState extends ModularState<SearchPage, RoomStore> {
         : Container();
   }
 
-  /// 1.create a chatroom, send user to the chatroom, other userdetails
   sendMessage(String userName) {
     List<String> users = [Constants.myName, userName];
 
