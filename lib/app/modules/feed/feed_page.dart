@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:socialgram/app/constants.dart';
 import 'package:socialgram/app/modules/feed/feed_store.dart';
-import 'package:socialgram/app/modules/room/chat_page.dart';
 
 class FeedPage extends StatefulWidget {
   final String title;
@@ -107,7 +106,9 @@ class FeedPageState extends ModularState<FeedPage, FeedStore> {
                                         icon: Icon(
                                             Icons.chat_bubble_outline_outlined),
                                         onPressed: () {
-                                          sendMessage(user['displayName']);
+                                          if (user['displayName'] !=
+                                              store.user!.displayName)
+                                            sendMessage(user['displayName']);
                                         },
                                       ),
                                       IconButton(
@@ -149,8 +150,7 @@ class FeedPageState extends ModularState<FeedPage, FeedStore> {
 
     store.addChatRoom(chatRoom, chatRoomId);
 
-    Modular.to
-        .pushReplacementNamed(Constants.Routes.ROOM + Constants.Routes.CHAT);
+    Modular.to.pushReplacementNamed('..${Constants.Routes.ROOM}');
   }
 
   getChatRoomId(String a, String b) {
