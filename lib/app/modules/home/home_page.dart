@@ -48,7 +48,8 @@ class _HomePageState extends State<HomePage> {
         onTap: _onTabChange,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_outline_outlined), label: 'Chat'),
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outline), label: 'Perfil'),
         ],

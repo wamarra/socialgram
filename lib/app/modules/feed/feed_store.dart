@@ -10,7 +10,10 @@ abstract class _FeedStoreBase with Store {
   FirebaseAuth firebaseAuth;
   FirebaseFirestore firebaseFirestore;
 
-  _FeedStoreBase({required this.firebaseAuth, required this.firebaseFirestore});
+  _FeedStoreBase(
+      {required this.firebaseAuth, required this.firebaseFirestore}) {
+    firebaseAuth.authStateChanges().listen(_onAuthChange);
+  }
 
   @computed
   Stream<QuerySnapshot> get posts {
@@ -18,6 +21,25 @@ abstract class _FeedStoreBase with Store {
         .collection('post')
         .orderBy('dateTime', descending: true)
         .snapshots();
+  }
+
+  @observable
+  late User? user = firebaseAuth.currentUser;
+
+  @action
+  void _onAuthChange(User? user) {
+    this.user = user;
+  }
+
+  @action
+  Future<bool?> addChatRoom(chatRoom, chatRoomId) async {
+    FirebaseFirestore.instance
+        .collection("chatRoom")
+        .doc(chatRoomId)
+        .set(chatRoom)
+        .catchError((e) {
+      print(e);
+    });
   }
 
   Future<DocumentSnapshot> getUser(String userId) async {

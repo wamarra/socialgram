@@ -17,9 +17,47 @@ mixin _$FeedStore on _FeedStoreBase, Store {
               name: '_FeedStoreBase.posts'))
       .value;
 
+  final _$userAtom = Atom(name: '_FeedStoreBase.user');
+
+  @override
+  User? get user {
+    _$userAtom.reportRead();
+    return super.user;
+  }
+
+  @override
+  set user(User? value) {
+    _$userAtom.reportWrite(value, super.user, () {
+      super.user = value;
+    });
+  }
+
+  final _$addChatRoomAsyncAction = AsyncAction('_FeedStoreBase.addChatRoom');
+
+  @override
+  Future<bool?> addChatRoom(dynamic chatRoom, dynamic chatRoomId) {
+    return _$addChatRoomAsyncAction
+        .run(() => super.addChatRoom(chatRoom, chatRoomId));
+  }
+
+  final _$_FeedStoreBaseActionController =
+      ActionController(name: '_FeedStoreBase');
+
+  @override
+  void _onAuthChange(User? user) {
+    final _$actionInfo = _$_FeedStoreBaseActionController.startAction(
+        name: '_FeedStoreBase._onAuthChange');
+    try {
+      return super._onAuthChange(user);
+    } finally {
+      _$_FeedStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
+user: ${user},
 posts: ${posts}
     ''';
   }

@@ -73,6 +73,7 @@ abstract class _RoomStoreBase with Store {
     return FirebaseFirestore.instance
         .collection("user")
         .where('displayName', isGreaterThanOrEqualTo: searchField)
+        .where('displayName', isNotEqualTo: user!.displayName)
         .get();
   }
 

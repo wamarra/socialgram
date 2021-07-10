@@ -16,7 +16,7 @@ class RoomPage extends StatefulWidget {
 class RoomPageState extends ModularState<RoomPage, RoomStore> {
   @override
   void initState() {
-    getUserInfogetChats();
+    getUserInfoGetChats();
     super.initState();
   }
 
@@ -76,7 +76,7 @@ class RoomPageState extends ModularState<RoomPage, RoomStore> {
     );
   }
 
-  getUserInfogetChats() async {
+  getUserInfoGetChats() async {
     Constants.myName = (await store.getUserNameSharedPreference())!;
     store.getUserChats(Constants.myName).then((snapshots) {
       setState(() {

@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:socialgram/app/constants.dart';
 import 'package:socialgram/app/modules/feed/feed_store.dart';
+import 'package:socialgram/app/modules/room/chat_page.dart';
 
 class FeedPage extends StatefulWidget {
   final String title;
@@ -28,8 +30,10 @@ class FeedPageState extends ModularState<FeedPage, FeedStore> {
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.chat_bubble_outline_rounded),
-            onPressed: () {},
+            icon: Icon(Icons.chat_bubble_outline_outlined),
+            onPressed: () {
+              Modular.to.pushNamed('..${Constants.Routes.ROOM}');
+            },
           ),
         ],
       ),
@@ -83,28 +87,46 @@ class FeedPageState extends ModularState<FeedPage, FeedStore> {
                           height: MediaQuery.of(context).size.width,
                           fit: BoxFit.cover),
                       SizedBox(height: 8),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.favorite_border_rounded),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.chat_bubble_outline_rounded),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.share_outlined),
-                            onPressed: () {},
-                          ),
-                          Spacer(),
-                          IconButton(
-                            icon: Icon(Icons.bookmark_border_rounded),
-                            onPressed: () {},
-                          ),
-                        ],
-                      )
+                      Container(
+                        child: FutureBuilder(
+                            future: store.getUser(post['userId']),
+                            builder: (context,
+                                AsyncSnapshot<DocumentSnapshot> snapshot) {
+                              if (snapshot.hasData) {
+                                final user = snapshot.data!.data()
+                                    as Map<String, dynamic>;
+                                return Container(
+                                  child: Row(
+                                    children: [
+                                      IconButton(
+                                        icon:
+                                            Icon(Icons.favorite_border_rounded),
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                            Icons.chat_bubble_outline_outlined),
+                                        onPressed: () {
+                                          sendMessage(user['displayName']);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.share_outlined),
+                                        onPressed: () {},
+                                      ),
+                                      Spacer(),
+                                      IconButton(
+                                        icon:
+                                            Icon(Icons.bookmark_border_rounded),
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              return Container();
+                            }),
+                      ),
                     ],
                   );
                 });
@@ -113,6 +135,32 @@ class FeedPageState extends ModularState<FeedPage, FeedStore> {
         },
       ),
     );
+  }
+
+  sendMessage(String userName) {
+    List<String> users = [store.user!.displayName!, userName];
+
+    String chatRoomId = getChatRoomId(store.user!.displayName!, userName);
+
+    Map<String, dynamic> chatRoom = {
+      'users': users,
+      'chatRoomId': chatRoomId,
+    };
+
+    store.addChatRoom(chatRoom, chatRoomId);
+
+    Modular.to
+        .pushReplacementNamed(Constants.Routes.ROOM + Constants.Routes.CHAT);
+  }
+
+  getChatRoomId(String a, String b) {
+    print(a);
+    print(b);
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
   }
 
   ImageProvider _getAvatar(Map<String, dynamic> user) {
